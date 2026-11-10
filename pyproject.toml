@@ -1,0 +1,11 @@
+[project]
+name = "happy-green"
+version = "0.1.0"
+description = "Gestão financeira pessoal com Python, Streamlit, POO e Supabase"
+requires-python = ">=3.12"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+addopts = "-ra"
+markers = ["integration: exige PostgreSQL exclusivo para testes"]

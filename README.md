@@ -56,7 +56,8 @@ user = "usuario copiado de Connect > Session pooler"
 password = "sua senha PostgreSQL"
 ```
 
-Execute `migrations/001_initial.sql` no SQL Editor do Supabase antes do primeiro uso.
+Execute `migrations/001_initial.sql` e depois as demais migrações da pasta, na ordem
+dos nomes, no SQL Editor do Supabase antes do primeiro uso.
 Então inicie:
 
 ```powershell
@@ -127,7 +128,8 @@ Veja o [diagrama e decisões](docs/ARQUITETURA.md) e o
 - Receitas/despesas estritamente positivas; sinal definido pelo método polimórfico.
 - Saldo inicial pode ser negativo. Saldo atual = inicial + todos os impactos.
 - Resultado mensal = receitas menos despesas do mês, sem incluir saldo inicial.
-- Somente movimentações realizadas: datas futuras não são aceitas pela aplicação.
+- Somente movimentações realizadas: datas futuras não são aceitas. A data financeira
+  segue `America/Sao_Paulo`, inclusive na hospedagem em UTC.
 - Categoria tem tipo fixo enquanto houver lançamentos ou orçamentos vinculados.
 - Exclusão de contas e categorias vinculadas é bloqueada também por chaves estrangeiras.
 - Categoria/mês tem um único orçamento; salvar novamente atualiza o limite.
@@ -144,6 +146,9 @@ Veja o [diagrama e decisões](docs/ARQUITETURA.md) e o
 Os testes de domínio e serviços não precisam de Supabase. Os testes de interface
 usam o `AppTest` oficial do Streamlit e um repositório exclusivamente de teste,
 definido em `tests/fakes.py`. A aplicação real sempre usa PostgreSQL.
+
+`tests/sql/constraints.sql` verifica as restrições no PostgreSQL em uma transação
+revertida ao final; execute no SQL Editor de um projeto dedicado à demonstração.
 
 Resultados realmente executados e limites de verificação ficam em
 [docs/VERIFICACAO.md](docs/VERIFICACAO.md). O roteiro manual está em
@@ -170,4 +175,3 @@ O exemplo didático de referência é a
 - A carteira inteira é carregada por sessão/interação: adequado ao escopo acadêmico,
   sem promessa de escala para grandes volumes.
 - Disponibilidade e suspensão por inatividade dependem dos planos dos provedores.
-
