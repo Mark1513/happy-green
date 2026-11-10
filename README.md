@@ -121,6 +121,8 @@ encapsulamento de Python. Serviços coordenam os casos de uso e as referências.
 
 Veja o [diagrama e decisões](docs/ARQUITETURA.md) e o
 [mapa dos critérios de avaliação](docs/AVALIACAO.md).
+O [guia de apresentação e defesa de POO](docs/DEFESA_POO.md) reúne falas para ensaio,
+referências ao código e respostas às perguntas mais prováveis.
 
 ## Regras financeiras
 

@@ -77,10 +77,10 @@ classDiagram
     ContaFinanceira "1" <-- "0..*" Lancamento : conta
     Categoria "1" <-- "0..*" Lancamento : categoria
     Categoria "1" <-- "0..*" OrcamentoMensal : categoria de despesa
-    Carteira "1" *-- "0..*" ContaFinanceira : fotografia em memória
-    Carteira "1" *-- "0..*" Categoria
-    Carteira "1" *-- "0..*" Lancamento
-    Carteira "1" *-- "0..*" OrcamentoMensal
+    Carteira "1" o-- "0..*" ContaFinanceira : agrupa referências
+    Carteira "1" o-- "0..*" Categoria
+    Carteira "1" o-- "0..*" Lancamento
+    Carteira "1" o-- "0..*" OrcamentoMensal
     ServicoFinanceiro --> RepositorioFinanceiro
     ServicoFinanceiro ..> Carteira
     RepositorioFinanceiro <|-- RepositorioPostgres
@@ -112,6 +112,17 @@ Atributos usam `_` por convenção e propriedades sem setters. Construtores vali
 invariantes. Python não oferece privacidade absoluta: acessar deliberadamente um
 atributo interno pode contornar a convenção, por isso o restante do sistema utiliza
 apenas a interface pública. Edições são novos objetos validados com o mesmo UUID.
+
+## Associação, agregação e composição
+
+`Lancamento` mantém referências a `ContaFinanceira` e `Categoria`: associação.
+`Carteira` agrupa referências em tuplas para representar uma fotografia dos dados:
+agregação. As entidades permanecem no banco mesmo quando essa fotografia é descartada.
+O diagrama usa losangos vazios para esse agrupamento.
+
+O projeto não modela uma composição UML forte com posse exclusiva e ciclo de vida
+dependente entre essas entidades. A expressão "composição das dependências" em
+`bootstrap.py` descreve a montagem de objetos colaboradores e tem outro sentido.
 
 ## Banco e concorrência
 
