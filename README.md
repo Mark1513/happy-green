@@ -3,9 +3,11 @@
 **Suas finanças, com mais leveza.** Gestão financeira pessoal com Python, Streamlit,
 Programação Orientada a Objetos e PostgreSQL no Supabase.
 
-> **Link público:** será registrado aqui depois de uma publicação efetivamente verificada.
-> A aplicação exige uma conexão real com o Supabase. Sem configuração, apresenta uma
-> tela de configuração inicial; não simula que os dados foram persistidos.
+> **Aplicação publicada:** https://happy-green-mark1513.streamlit.app/
+>
+> Publicação e conexão com o Supabase verificadas em 10/11/2026. Os dados de
+> demonstração foram carregados pela interface e persistidos no projeto Happy Green 1.
+> Para reproduzir em outro ambiente, configure sua própria conexão com o banco.
 
 ## Objetivo e escopo
 

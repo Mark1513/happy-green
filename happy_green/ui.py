@@ -96,7 +96,8 @@ def dashboard(service, carteira):
     hero("Seu dinheiro, bem cuidado.", "Acompanhe o que entra, entenda o que sai e dê espaço aos seus planos.")
     mes = selecionar_mes(carteira, "dashboard_mes")
     resumo = service.resumir(carteira, mes)
-    cards = st.columns(4)
+    # Duas colunas mantêm valores e rótulos legíveis também em painéis estreitos.
+    cards = [*st.columns(2), *st.columns(2)]
     for coluna, titulo, valor, ajuda in zip(
         cards, ("Saldo total atual", "Receitas do mês", "Despesas do mês", "Resultado do mês"),
         (resumo.saldo_total, resumo.receitas, resumo.despesas, resumo.resultado),
@@ -322,7 +323,8 @@ def resumo_mensal(service, carteira):
     hero("Seu mês em perspectiva.", "Transforme seus registros em uma visão clara das suas escolhas.", "Resumo mensal")
     mes = selecionar_mes(carteira, "resumo_mes")
     resumo = service.resumir(carteira, mes)
-    a, b, c = st.columns(3)
+    a, b = st.columns(2)
+    c = st.container()
     a.metric("Receitas", brl(resumo.receitas), border=True)
     b.metric("Despesas", brl(resumo.despesas), border=True)
     c.metric("Resultado mensal", brl(resumo.resultado), border=True)
