@@ -162,7 +162,8 @@ def contas(service, carteira):
     with editar:
         if carteira.contas:
             mapa = {x.id: x for x in carteira.contas}
-            id = st.selectbox("Conta para editar", list(mapa), format_func=lambda x: mapa[x].nome)
+            id = st.selectbox("Conta para editar", list(mapa), format_func=lambda x: mapa[x].nome,
+                              key="editar_conta_id")
             item = mapa[id]
             formulario_conta(service, item)
             confirmar_exclusao(service, "contas", item, item.nome)
@@ -193,7 +194,8 @@ def categorias(service, carteira):
         if carteira.categorias:
             mapa = {x.id: x for x in carteira.categorias}
             id = st.selectbox("Categoria para editar", list(mapa),
-                              format_func=lambda x: f"{mapa[x].nome} · {mapa[x].tipo.value.title()}")
+                              format_func=lambda x: f"{mapa[x].nome} · {mapa[x].tipo.value.title()}",
+                              key="editar_categoria_id")
             item = mapa[id]
             formulario_categoria(service, item)
             st.caption("O tipo de categorias vinculadas não pode ser alterado. O nome pode ser editado.")
@@ -244,7 +246,8 @@ def lancamentos(service, carteira):
         if carteira.lancamentos:
             mapa = {x.id: x for x in carteira.lancamentos}
             id = st.selectbox("Lançamento para editar", list(mapa),
-                              format_func=lambda x: f"{mapa[x].data:%d/%m/%Y} · {mapa[x].descricao} · {brl(mapa[x].valor)}")
+                              format_func=lambda x: f"{mapa[x].data:%d/%m/%Y} · {mapa[x].descricao} · {brl(mapa[x].valor)}",
+                              key="editar_lancamento_id")
             item = mapa[id]
             formulario_lancamento(service, carteira, item)
             confirmar_exclusao(service, "lancamentos", item, item.descricao)
@@ -310,7 +313,8 @@ def orcamentos(service, carteira):
         st.info("Cadastre uma categoria de despesa para definir orçamentos.")
     if itens:
         mapa_orc = {x.id: x for x in itens}
-        id = st.selectbox("Orçamento para excluir", list(mapa_orc), format_func=lambda x: mapa_orc[x].categoria.nome)
+        id = st.selectbox("Orçamento para excluir", list(mapa_orc), format_func=lambda x: mapa_orc[x].categoria.nome,
+                          key="excluir_orcamento_id")
         confirmar_exclusao(service, "orcamentos", mapa_orc[id], mapa_orc[id].categoria.nome)
 
 

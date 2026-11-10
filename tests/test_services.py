@@ -4,6 +4,7 @@ from uuid import uuid4
 
 import pytest
 
+from happy_green.clock import hoje as data_atual
 from happy_green.domain import TipoLancamento as Tipo
 from happy_green.errors import ConflictError, NotFoundError, ValidationError
 
@@ -11,7 +12,7 @@ from happy_green.errors import ConflictError, NotFoundError, ValidationError
 def test_cenario_completo_de_demonstracao(service):
     service.carregar_demonstracao()
     carteira = service.carregar()
-    hoje = date.today()
+    hoje = data_atual()
     resumo = service.resumir(carteira, hoje)
     assert resumo.saldo_total == Decimal("1080.00")
     assert resumo.receitas == Decimal("1500.00")
@@ -30,7 +31,7 @@ def test_cenario_completo_de_demonstracao(service):
 
 
 def test_resultado_mensal_diferente_de_saldo_acumulado(service):
-    hoje = date.today()
+    hoje = data_atual()
     antes = hoje.replace(day=1) - timedelta(days=1)
     conta = service.salvar_conta("Banco", "100")
     cat = service.salvar_categoria("Renda", Tipo.RECEITA)
@@ -58,8 +59,8 @@ def test_referencias_e_duplicatas(service):
 
 def test_orcamento_unico_atualiza_e_categoria_vinculada(service):
     categoria = service.salvar_categoria("Comida", Tipo.DESPESA)
-    original = service.salvar_orcamento(categoria.id, date.today(), "250")
-    atualizado = service.salvar_orcamento(categoria.id, date.today().replace(day=1), "300")
+    original = service.salvar_orcamento(categoria.id, data_atual(), "250")
+    atualizado = service.salvar_orcamento(categoria.id, data_atual().replace(day=1), "300")
     assert len(service.carregar().orcamentos) == 1
     assert atualizado.id == original.id
     assert service.carregar().orcamentos[0].limite == Decimal("300")
@@ -77,17 +78,17 @@ def test_edicao_de_conta_e_categoria_reconstroi_associacoes(service):
     nova = service.carregar()
     assert all(x.conta.nome == "Novo nome" for x in nova.lancamentos)
     assert nova.orcamentos[0].categoria.nome == "Mercado"
-    assert service.resumir(nova, date.today()).saldo_total == Decimal("1090")
+    assert service.resumir(nova, data_atual()).saldo_total == Decimal("1090")
 
 
 def test_filtros_combinados_e_periodo_invertido(service):
     service.carregar_demonstracao()
     carteira = service.carregar()
     gasto = next(x for x in carteira.lancamentos if x.categoria.nome == "Transporte")
-    itens = service.filtrar(carteira, date.today(), date.today(), gasto.conta.id, gasto.categoria.id, Tipo.DESPESA)
+    itens = service.filtrar(carteira, data_atual(), data_atual(), gasto.conta.id, gasto.categoria.id, Tipo.DESPESA)
     assert len(itens) == 1 and itens[0].id == gasto.id
     with pytest.raises(ValidationError):
-        service.filtrar(carteira, date.today(), date.today() - timedelta(days=1))
+        service.filtrar(carteira, data_atual(), data_atual() - timedelta(days=1))
 
 
 def test_exclusao_de_registros_sem_vinculos(service):

@@ -3,6 +3,7 @@ from decimal import Decimal
 
 import pytest
 
+from happy_green.clock import hoje as data_atual
 from happy_green.domain import (Categoria, ContaFinanceira, Despesa, Lancamento,
                                 OrcamentoMensal, Receita, TipoLancamento, dinheiro)
 from happy_green.errors import ValidationError
@@ -43,9 +44,9 @@ def test_rejeita_formato_ambiguo(valor):
 def test_classe_abstrata_e_polimorfismo():
     conta, renda, gasto = objetos()
     with pytest.raises(TypeError):
-        Lancamento(conta, renda, "Exemplo", "10", date.today())
-    itens = [Receita(conta, renda, "Bolsa", "1500", date.today()),
-             Despesa(conta, gasto, "Comida", "300", date.today())]
+        Lancamento(conta, renda, "Exemplo", "10", data_atual())
+    itens = [Receita(conta, renda, "Bolsa", "1500", data_atual()),
+             Despesa(conta, gasto, "Comida", "300", data_atual())]
     assert [x.calcular_impacto_no_saldo() for x in itens] == [Decimal("1500"), Decimal("-300")]
     assert conta.calcular_saldo(itens) == Decimal("1200.00")
 
@@ -60,17 +61,17 @@ def test_encapsulamento_impede_setter_que_burla_validacao():
 def test_lancamentos_exigem_valor_positivo(valor):
     conta, _, gasto = objetos()
     with pytest.raises(ValidationError):
-        Despesa(conta, gasto, "Compra", valor, date.today())
+        Despesa(conta, gasto, "Compra", valor, data_atual())
 
 
 def test_categoria_data_e_descricao_protegidas():
     conta, renda, gasto = objetos()
     with pytest.raises(ValidationError):
-        Despesa(conta, renda, "Compra", "10", date.today())
+        Despesa(conta, renda, "Compra", "10", data_atual())
     with pytest.raises(ValidationError):
-        Receita(conta, renda, " ", "10", date.today())
+        Receita(conta, renda, " ", "10", data_atual())
     with pytest.raises(ValidationError):
-        Despesa(conta, gasto, "Amanhã", "10", date.today() + timedelta(days=1))
+        Despesa(conta, gasto, "Amanhã", "10", data_atual() + timedelta(days=1))
     with pytest.raises(ValidationError):
         Categoria("", TipoLancamento.DESPESA)
     with pytest.raises(ValidationError):
@@ -80,15 +81,15 @@ def test_categoria_data_e_descricao_protegidas():
 def test_saldo_respeita_conta_e_inclui_inicial():
     conta, renda, gasto = objetos()
     outra = ContaFinanceira("Banco", "100")
-    itens = [Receita(conta, renda, "Bolsa", "1500", date.today()),
-             Despesa(outra, gasto, "Compra", "40", date.today())]
+    itens = [Receita(conta, renda, "Bolsa", "1500", data_atual()),
+             Despesa(outra, gasto, "Compra", "40", data_atual())]
     assert conta.calcular_saldo(itens) == Decimal("1500")
     assert outra.calcular_saldo(itens) == Decimal("60")
 
 
 def test_orcamento_mes_categoria_e_limite():
     conta, renda, gasto = objetos()
-    hoje = date.today()
+    hoje = data_atual()
     anterior = hoje.replace(day=1) - timedelta(days=1)
     item = OrcamentoMensal(gasto, hoje, "250")
     itens = [Despesa(conta, gasto, "Agora", "300", hoje),
